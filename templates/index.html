@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Home - Wishlist{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>Save items you wish to buy</h1>
+
+  <form method="get" class="search">
+    <input name="q" placeholder="Search name or store link" value="{{ q }}">
+    <button class="btn" type="submit">Search</button>
+    <a class="btn ghost" href="{{ url_for('index') }}">Clear</a>
+  </form>
+
+  <div class="layout">
+    <div class="left">
+      <h2>Add item</h2>
+      <form method="post" class="form">
+        <label>Name</label>
+        <input name="name" required>
+        <label>Price</label>
+        <input name="price" placeholder="e.g. ₹ 1,20,000">
+        <label>Store link</label>
+        <input name="store_link" placeholder="https://...">
+        <button class="btn" type="submit">Save</button>
+      </form>
+    </div>
+
+    <div class="right">
+      <h2>Saved items</h2>
+      {% if items %}
+      <ul class="list">
+        {% for it in items %}
+        <li>
+          <div class="item-row">
+            <div class="item-main">
+              <a class="item-name" href="{{ it['store_link'] }}" target="_blank">{{ it['name'] }}</a>
+              <div class="item-meta">{{ it['price'] or 'Price not set' }}</div>
+              <div class="item-meta small">Added: {{ it['created_at'] }}</div>
+            </div>
+            <div class="item-actions">
+              <form method="post" action="{{ url_for('delete', item_id=it['id']) }}" onsubmit="return confirm('Delete this item?');">
+                <button class="btn small ghost" type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+      {% else %}
+      <p class="muted">No items yet. Add one from the left.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}
